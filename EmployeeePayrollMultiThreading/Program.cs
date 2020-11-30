@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace EmployeeePayrollMultiThreading
 {
@@ -6,7 +9,7 @@ namespace EmployeeePayrollMultiThreading
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to employee payroll");
+            Console.WriteLine("Welcome to employee payroll multi threading");
         }
     }
 }
