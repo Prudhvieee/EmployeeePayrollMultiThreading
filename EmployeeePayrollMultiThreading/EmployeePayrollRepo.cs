@@ -13,6 +13,7 @@ namespace EmployeeePayrollMultiThreading
         public static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PayrollService;Integrated Security=True";
         SqlConnection sqlconnection = new SqlConnection(connectionString);
          public List<EmployyeePayrollModel> employeePayrollList = new List<EmployyeePayrollModel>();
+        private static Mutex mutex = new Mutex();
         public bool AddEmployee(EmployyeePayrollModel employyeePayrollModel)
         {
             try
@@ -76,6 +77,23 @@ namespace EmployeeePayrollMultiThreading
                     Console.WriteLine("Employee Added:  " + employeeData.Name);
                 });
                 task.Start();
+            });
+        }
+        public void AddMultipleEmployeeWithThreadSyncronization(List<EmployyeePayrollModel> employeeModelList)
+        {
+            employeeModelList.ForEach(employeeData =>
+            {
+                Task task = new Task(() =>
+                {
+                    mutex.WaitOne();
+                    Console.WriteLine("Employee Being Added: " + employeeData.Name);
+                    Console.WriteLine("Current thread Id: " + Thread.CurrentThread.ManagedThreadId);
+                    this.AddEmployee(employeeData);
+                    Console.WriteLine("Employee Added: " + employeeData.Name);
+                    mutex.ReleaseMutex();
+                });
+                task.Start();
+                task.Wait();
             });
         }
     }
