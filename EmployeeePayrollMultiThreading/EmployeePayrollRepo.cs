@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmployeeePayrollMultiThreading
 {
@@ -61,6 +63,20 @@ namespace EmployeeePayrollMultiThreading
                 Console.WriteLine("Employee added: " + employeeData.Name);
             });
             Console.WriteLine(this.employeePayrollList.ToString());
+        }
+        public void AddMultipleEmployeeUsingThread(List<EmployyeePayrollModel> employeeModelList)
+        {
+            employeeModelList.ForEach(employeeData =>
+            {
+                Task task = new Task(() =>
+                {
+                    Console.WriteLine("Employee being added: " + employeeData.Name);
+                    Console.WriteLine("Current thread Id: " + Thread.CurrentThread.ManagedThreadId);
+                    this.AddEmployee(employeeData);
+                    Console.WriteLine("Employee Added:  " + employeeData.Name);
+                });
+                task.Start();
+            });
         }
     }
 }
